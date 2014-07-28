@@ -1,7 +1,16 @@
 module Spree
   module Api
     class ImagesController < Spree::Api::BaseController
-
+      
+      def index
+        if params[:ids]
+          @imgaes = scope.where(:id => params[:ids].split(","))
+        else
+          @imgaes = scope.ransack(params[:q]).result
+        end
+        respond_with(@imgaes)
+      end
+      
       def show
         @image = Image.accessible_by(current_ability, :read).find(params[:id])
         respond_with(@image)
